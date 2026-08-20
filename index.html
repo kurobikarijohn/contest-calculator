@@ -119,11 +119,11 @@
     }
 
     .stat-name.da {
-        color: #e29a24;
+        color: #4f8fe8;
     }
 
     .stat-name.vi {
-        color: #4f8fe8;
+        color: #e29a24;
     }
 
     input[type="number"] {
@@ -146,6 +146,41 @@
     input[type="number"]:disabled {
         background: #f2f1f6;
         color: #777;
+    }
+
+
+    .limit-area {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 14px;
+        padding: 10px 12px;
+        background: #f7f6fb;
+        border-radius: 12px;
+    }
+
+    .limit-label {
+        font-size: 13px;
+        font-weight: bold;
+        color: #555;
+        white-space: nowrap;
+    }
+
+    .limit-select {
+        flex: 1;
+        max-width: 180px;
+        border: 2px solid #e3e0ed;
+        border-radius: 10px;
+        padding: 9px 10px;
+        font-size: 14px;
+        background: white;
+        color: #444;
+        outline: none;
+    }
+
+    .limit-select:focus {
+        border-color: #7765dc;
     }
 
     .max-label {
@@ -181,32 +216,6 @@
 
     .total.over .number {
         color: #e04455;
-    }
-
-    .actions {
-        display: flex;
-        gap: 10px;
-        margin-top: 10px;
-    }
-
-    button.action {
-        flex: 1;
-        border: none;
-        border-radius: 12px;
-        padding: 13px;
-        font-size: 14px;
-        font-weight: bold;
-        cursor: pointer;
-    }
-
-    .reset {
-        background: #eeeef2;
-        color: #666;
-    }
-
-    .fill {
-        background: #6957d5;
-        color: white;
     }
 
     .formula {
@@ -258,7 +267,7 @@
 
     <div class="description">
         表と裏のメモリーを組み合わせたときの<br>
-        各ステータスの最大値を計算します。
+        必要なステータスを計算します。
     </div>
 
     <div class="switch-area">
@@ -281,6 +290,13 @@
             <h2>表メモリー</h2>
             <span id="frontBadge" class="badge">入力</span>
         </div>
+        <div class="limit-area">
+            <span class="limit-label">上限</span>
+            <select id="frontLimit" class="limit-select" onchange="calculate()">
+                <option value="3200">HIF（3200）</option>
+                <option value="3000">初レジェ（3000）</option>
+            </select>
+        </div>
 
         <div class="stat-row">
             <div class="stat-name vo">Vo</div>
@@ -290,7 +306,7 @@
                    max="3200"
                    value="0"
                    oninput="calculate()">
-            <div class="max-label">0～3200</div>
+            <div class="max-label" id="frontVoMax">0～3200</div>
         </div>
 
         <div class="stat-row">
@@ -301,7 +317,7 @@
                    max="3200"
                    value="0"
                    oninput="calculate()">
-            <div class="max-label">0～3200</div>
+            <div class="max-label" id="frontDaMax">0～3200</div>
         </div>
 
         <div class="stat-row">
@@ -312,7 +328,7 @@
                    max="3200"
                    value="0"
                    oninput="calculate()">
-            <div class="max-label">0～3200</div>
+            <div class="max-label" id="frontViMax">0～3200</div>
         </div>
     </div>
 
@@ -321,6 +337,13 @@
         <div class="card-title">
             <h2>裏メモリー</h2>
             <span id="backBadge" class="badge">自動計算</span>
+        </div>
+        <div class="limit-area">
+            <span class="limit-label">上限</span>
+            <select id="backLimit" class="limit-select" onchange="calculate()">
+                <option value="3200">HIF（3200）</option>
+                <option value="3000">初レジェ（3000）</option>
+            </select>
         </div>
 
         <div class="stat-row">
@@ -331,7 +354,7 @@
                    max="3200"
                    value="0"
                    oninput="manualBackInput()">
-            <div class="max-label">0～3200</div>
+            <div class="max-label" id="backVoMax">0～3200</div>
         </div>
 
         <div class="stat-row">
@@ -342,7 +365,7 @@
                    max="3200"
                    value="0"
                    oninput="manualBackInput()">
-            <div class="max-label">0～3200</div>
+            <div class="max-label" id="backDaMax">0～3200</div>
         </div>
 
         <div class="stat-row">
@@ -353,88 +376,16 @@
                    max="3200"
                    value="0"
                    oninput="manualBackInput()">
-            <div class="max-label">0～3200</div>
+            <div class="max-label" id="backViMax">0～3200</div>
         </div>
-
-        <div class="result">
-            <div>
-                裏メモリーの推奨最大値：
-            </div>
-            <div>
-                Vo <strong id="backResultVo">3200</strong>　
-                Da <strong id="backResultDa">3200</strong>　
-                Vi <strong id="backResultVi">3200</strong>
-            </div>
-        </div>
-    </div>
-
-    <!-- 合計 -->
-    <div class="card">
-        <div class="card-title">
-            <h2>最終ステータス</h2>
-            <span class="badge">3360上限</span>
-        </div>
-
-        <div class="stat-row">
-            <div class="stat-name vo">Vo</div>
-            <div class="result">
-                <strong id="totalVo">0</strong>
-            </div>
-            <div class="max-label">/ 3360</div>
-        </div>
-
-        <div class="stat-row">
-            <div class="stat-name da">Da</div>
-            <div class="result">
-                <strong id="totalDa">0</strong>
-            </div>
-            <div class="max-label">/ 3360</div>
-        </div>
-
-        <div class="stat-row">
-            <div class="stat-name vi">Vi</div>
-            <div class="result">
-                <strong id="totalVi">0</strong>
-            </div>
-            <div class="max-label">/ 3360</div>
-        </div>
-    </div>
-
-    <div class="actions">
-        <button class="action reset" onclick="resetAll()">
-            リセット
-        </button>
-
-        <button class="action fill" onclick="fillMax()">
-            最大値にする
-        </button>
     </div>
 
     <div class="formula">
         <div class="formula-title">計算式</div>
-
-        最終ステータス =
-        <b>表 +（裏 ÷ 5）</b>
-
-        <br>
-
-        最終ステータスの上限は <b>3360</b>。
-
-        <br>
-
-        そのため、表から裏を求める場合は
-
-        <br>
-
-        <b>裏 = min(3200, floor((3360 − 表) × 5))</b>
-
-        <br>
-
-        裏から表を求める場合は
-
-        <br>
-
-        <b>表 = min(3200, floor(3360 − 裏 ÷ 5))</b>
+        最終ステータス = <b>表 +（裏 ÷ 5）</b><br>
+        最終ステータスの上限は <b>3360</b>。<br>
+        表 → 裏：<b>裏 = min(裏メモリー上限, floor((3360 − 表) × 5))</b><br>
+        裏 → 表：<b>表 = min(表メモリー上限, floor(3360 − 裏 ÷ 5))</b>
     </div>
 
     <div class="footer">
@@ -446,116 +397,93 @@
 <script>
 let mode = "front";
 
-/*
- * 入力値を0～3200に収める
- */
-function clamp(value) {
-    value = Number(value) || 0;
-    return Math.max(0, Math.min(3200, Math.floor(value)));
+function getFrontLimit() {
+    return Number(document.getElementById("frontLimit").value);
 }
 
-/*
- * 表 → 裏
- *
- * 表 + 裏 / 5 <= 3360
- *
- * 裏 <= (3360 - 表) * 5
- */
+function getBackLimit() {
+    return Number(document.getElementById("backLimit").value);
+}
+
+function clamp(value, max) {
+    value = Number(value) || 0;
+    return Math.max(0, Math.min(max, Math.floor(value)));
+}
+
+function updateLimitDisplay() {
+    const frontLimit = getFrontLimit();
+    const backLimit = getBackLimit();
+
+    ["frontVo", "frontDa", "frontVi"].forEach(id => {
+        document.getElementById(id).max = frontLimit;
+    });
+    ["backVo", "backDa", "backVi"].forEach(id => {
+        document.getElementById(id).max = backLimit;
+    });
+
+    ["frontVoMax", "frontDaMax", "frontViMax"].forEach(id => {
+        document.getElementById(id).textContent = `0～${frontLimit}`;
+    });
+    ["backVoMax", "backDaMax", "backViMax"].forEach(id => {
+        document.getElementById(id).textContent = `0～${backLimit}`;
+    });
+}
+
 function calcBack(front) {
     return Math.max(
         0,
         Math.min(
-            3200,
+            getBackLimit(),
             Math.floor((3360 - front) * 5)
         )
     );
 }
 
-/*
- * 裏 → 表
- *
- * 表 + 裏 / 5 <= 3360
- *
- * 表 <= 3360 - 裏 / 5
- *
- * ステータスは整数なのでfloor
- */
 function calcFront(back) {
     return Math.max(
         0,
         Math.min(
-            3200,
+            getFrontLimit(),
             Math.floor(3360 - back / 5)
         )
     );
 }
 
-/*
- * 表 → 裏モード
- */
 function calculateFromFront() {
-    const frontVo = clamp(
-        document.getElementById("frontVo").value
-    );
+    const frontLimit = getFrontLimit();
 
-    const frontDa = clamp(
-        document.getElementById("frontDa").value
-    );
-
-    const frontVi = clamp(
-        document.getElementById("frontVi").value
-    );
-
-    const backVo = calcBack(frontVo);
-    const backDa = calcBack(frontDa);
-    const backVi = calcBack(frontVi);
-
-    document.getElementById("backVo").value = backVo;
-    document.getElementById("backDa").value = backDa;
-    document.getElementById("backVi").value = backVi;
-
-    document.getElementById("backResultVo").textContent = backVo;
-    document.getElementById("backResultDa").textContent = backDa;
-    document.getElementById("backResultVi").textContent = backVi;
-
-    updateTotals();
-}
-
-/*
- * 裏 → 表モード
- */
-function calculateFromBack() {
-    const backVo = clamp(
-        document.getElementById("backVo").value
-    );
-
-    const backDa = clamp(
-        document.getElementById("backDa").value
-    );
-
-    const backVi = clamp(
-        document.getElementById("backVi").value
-    );
-
-    const frontVo = calcFront(backVo);
-    const frontDa = calcFront(backDa);
-    const frontVi = calcFront(backVi);
+    const frontVo = clamp(document.getElementById("frontVo").value, frontLimit);
+    const frontDa = clamp(document.getElementById("frontDa").value, frontLimit);
+    const frontVi = clamp(document.getElementById("frontVi").value, frontLimit);
 
     document.getElementById("frontVo").value = frontVo;
     document.getElementById("frontDa").value = frontDa;
     document.getElementById("frontVi").value = frontVi;
 
-    document.getElementById("backResultVo").textContent = backVo;
-    document.getElementById("backResultDa").textContent = backDa;
-    document.getElementById("backResultVi").textContent = backVi;
-
-    updateTotals();
+    document.getElementById("backVo").value = calcBack(frontVo);
+    document.getElementById("backDa").value = calcBack(frontDa);
+    document.getElementById("backVi").value = calcBack(frontVi);
 }
 
-/*
- * 現在のモードで計算
- */
+function calculateFromBack() {
+    const backLimit = getBackLimit();
+
+    const backVo = clamp(document.getElementById("backVo").value, backLimit);
+    const backDa = clamp(document.getElementById("backDa").value, backLimit);
+    const backVi = clamp(document.getElementById("backVi").value, backLimit);
+
+    document.getElementById("backVo").value = backVo;
+    document.getElementById("backDa").value = backDa;
+    document.getElementById("backVi").value = backVi;
+
+    document.getElementById("frontVo").value = calcFront(backVo);
+    document.getElementById("frontDa").value = calcFront(backDa);
+    document.getElementById("frontVi").value = calcFront(backVi);
+}
+
 function calculate() {
+    updateLimitDisplay();
+
     if (mode === "front") {
         calculateFromFront();
     } else {
@@ -563,18 +491,6 @@ function calculate() {
     }
 }
 
-/*
- * 手動入力
- */
-function manualBackInput() {
-    if (mode === "back") {
-        calculateFromBack();
-    }
-}
-
-/*
- * 表/裏切り替え
- */
 function setMode(newMode) {
     mode = newMode;
 
@@ -590,151 +506,33 @@ function setMode(newMode) {
         document.getElementById("backVi")
     ];
 
-    const frontButton = document.getElementById("frontMode");
-    const backButton = document.getElementById("backMode");
-
-    const frontBadge = document.getElementById("frontBadge");
-    const backBadge = document.getElementById("backBadge");
-
     if (mode === "front") {
+        document.getElementById("frontMode").classList.add("active");
+        document.getElementById("backMode").classList.remove("active");
 
-        frontButton.classList.add("active");
-        backButton.classList.remove("active");
+        document.getElementById("frontBadge").textContent = "入力";
+        document.getElementById("backBadge").textContent = "自動計算";
 
-        frontBadge.textContent = "入力";
-        backBadge.textContent = "自動計算";
-
-        frontInputs.forEach(input => {
-            input.disabled = false;
-        });
-
-        backInputs.forEach(input => {
-            input.disabled = true;
-        });
+        frontInputs.forEach(input => input.disabled = false);
+        backInputs.forEach(input => input.disabled = true);
 
         calculateFromFront();
-
     } else {
+        document.getElementById("frontMode").classList.remove("active");
+        document.getElementById("backMode").classList.add("active");
 
-        frontButton.classList.remove("active");
-        backButton.classList.add("active");
+        document.getElementById("frontBadge").textContent = "自動計算";
+        document.getElementById("backBadge").textContent = "入力";
 
-        frontBadge.textContent = "自動計算";
-        backBadge.textContent = "入力";
-
-        frontInputs.forEach(input => {
-            input.disabled = true;
-        });
-
-        backInputs.forEach(input => {
-            input.disabled = false;
-        });
+        frontInputs.forEach(input => input.disabled = true);
+        backInputs.forEach(input => input.disabled = false);
 
         calculateFromBack();
     }
+
+    updateLimitDisplay();
 }
 
-/*
- * 最終ステータスを表示
- */
-function updateTotals() {
-
-    const frontVo = clamp(
-        document.getElementById("frontVo").value
-    );
-
-    const frontDa = clamp(
-        document.getElementById("frontDa").value
-    );
-
-    const frontVi = clamp(
-        document.getElementById("frontVi").value
-    );
-
-    const backVo = clamp(
-        document.getElementById("backVo").value
-    );
-
-    const backDa = clamp(
-        document.getElementById("backDa").value
-    );
-
-    const backVi = clamp(
-        document.getElementById("backVi").value
-    );
-
-    const totalVo = frontVo + backVo / 5;
-    const totalDa = frontDa + backDa / 5;
-    const totalVi = frontVi + backVi / 5;
-
-    document.getElementById("totalVo").textContent =
-        formatNumber(totalVo);
-
-    document.getElementById("totalDa").textContent =
-        formatNumber(totalDa);
-
-    document.getElementById("totalVi").textContent =
-        formatNumber(totalVi);
-}
-
-/*
- * 小数を見やすく表示
- */
-function formatNumber(value) {
-    if (Number.isInteger(value)) {
-        return value.toString();
-    }
-
-    return value.toFixed(1);
-}
-
-/*
- * 最大値にする
- *
- * 表→裏なら表を3200、
- * 裏→表なら裏を3200にする。
- */
-function fillMax() {
-
-    if (mode === "front") {
-
-        document.getElementById("frontVo").value = 3200;
-        document.getElementById("frontDa").value = 3200;
-        document.getElementById("frontVi").value = 3200;
-
-        calculateFromFront();
-
-    } else {
-
-        document.getElementById("backVo").value = 3200;
-        document.getElementById("backDa").value = 3200;
-        document.getElementById("backVi").value = 3200;
-
-        calculateFromBack();
-    }
-}
-
-/*
- * 全リセット
- */
-function resetAll() {
-
-    document.getElementById("frontVo").value = 0;
-    document.getElementById("frontDa").value = 0;
-    document.getElementById("frontVi").value = 0;
-
-    document.getElementById("backVo").value = 0;
-    document.getElementById("backDa").value = 0;
-    document.getElementById("backVi").value = 0;
-
-    mode = "front";
-
-    setMode("front");
-}
-
-/*
- * 初期状態
- */
 setMode("front");
 </script>
 
