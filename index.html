@@ -284,8 +284,9 @@
         </button>
     </div>
 
+    <div id="memoryCards">
     <!-- 表 -->
-    <div class="card">
+    <div id="frontCard" class="card">
         <div class="card-title">
             <h2>表メモリー</h2>
             <span id="frontBadge" class="badge">入力</span>
@@ -333,7 +334,7 @@
     </div>
 
     <!-- 裏 -->
-    <div class="card">
+    <div id="backCard" class="card">
         <div class="card-title">
             <h2>裏メモリー</h2>
             <span id="backBadge" class="badge">自動計算</span>
@@ -353,7 +354,7 @@
                    min="0"
                    max="3200"
                    value="0"
-                   oninput="manualBackInput()">
+                   oninput="calculate()">
             <div class="max-label" id="backVoMax">0～3200</div>
         </div>
 
@@ -364,7 +365,7 @@
                    min="0"
                    max="3200"
                    value="0"
-                   oninput="manualBackInput()">
+                   oninput="calculate()">
             <div class="max-label" id="backDaMax">0～3200</div>
         </div>
 
@@ -375,9 +376,10 @@
                    min="0"
                    max="3200"
                    value="0"
-                   oninput="manualBackInput()">
+                   oninput="calculate()">
             <div class="max-label" id="backViMax">0～3200</div>
         </div>
+    </div>
     </div>
 
     <div class="formula">
@@ -491,8 +493,26 @@ function calculate() {
     }
 }
 
+
+function updateCardOrder() {
+    const container = document.getElementById("memoryCards");
+    const frontCard = document.getElementById("frontCard");
+    const backCard = document.getElementById("backCard");
+
+    if (!container || !frontCard || !backCard) return;
+
+    if (mode === "front") {
+        container.appendChild(frontCard);
+        container.appendChild(backCard);
+    } else {
+        container.appendChild(backCard);
+        container.appendChild(frontCard);
+    }
+}
+
 function setMode(newMode) {
     mode = newMode;
+    updateCardOrder();
 
     const frontInputs = [
         document.getElementById("frontVo"),
